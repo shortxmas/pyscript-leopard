@@ -10,7 +10,7 @@ import { indentationMarkers } from "@replit/codemirror-indentation-markers";
 function App() {
   const editor = useRef(null);
   const viewRef = useRef(null);
-  const [codeState, changeCodeState] = useState()
+  const [functionsDeclared, setFunctionsDeclared] = useState(false);
 
   useEffect(() => {
     const serverUri = "ws://localhost:4600";
@@ -40,35 +40,38 @@ function App() {
 
     viewRef.current = view;
 
+    // if (!functionsDeclared) {
+    //   const functions = `
+    //   const mockPatchApiFunction = () => {
+    //     window.alert("Mock API function invoked.");
+    //   };
+    //   `;
+
+    //   document.getElementById("imports").textContent = functions;
+    //   setFunctionsDeclared(true);
+    // }
+
     return () => {
       view.destroy();
     };
   }, []);
 
-  const testFunctionToRun = (name) =>{
-    console.log(`My name is ${name}`)
-  }
+  const rerunScript = () => {
+    const imports = `from pyscript import display\nimport js\nmockPatchApiFunction=js.eval("mockPatchApiFunction")\nmockPatchApiFunctionWithParameter=js.eval("mockPatchApiFunctionWithParameter")\n`;
 
-  const logCode = () => {
-    if (viewRef.current) {
-      console.log(viewRef.current.state.doc.toString());
-    }
-  };
-
-  const setCode = () => {
-    if (viewRef.current) {
-      changeCodeState(viewRef.current.state.doc.toString());
-    }
+    const newScript = document.createElement("script");
+    newScript.type = "py";
+    newScript.text = imports + viewRef.current.state.doc.toString();
+    document.getElementById("result").appendChild(newScript);
   };
 
   return (
     <div className="App">
       <h1>Python Code Editor</h1>
       <div ref={editor}></div>
-      <script type="py">
-        {codeState}
-      </script>
-      <button onClick={()=>{setCode()}}>Test</button>
+      <button onClick={rerunScript}>Run Script</button>
+      {/* <script id="imports"></script> */}
+      <div id="result"></div>
     </div>
   );
 }
