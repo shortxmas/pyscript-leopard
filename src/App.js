@@ -10,7 +10,6 @@ import { indentationMarkers } from "@replit/codemirror-indentation-markers";
 function App() {
   const editor = useRef(null);
   const viewRef = useRef(null);
-  const [functionsDeclared, setFunctionsDeclared] = useState(false);
 
   useEffect(() => {
     const serverUri = "ws://localhost:4600";
